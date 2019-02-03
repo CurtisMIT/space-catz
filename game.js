@@ -1,31 +1,26 @@
-app = new PIXI.Application(window.innerWidth, window.innerHeight, {backgroundColor : 0x2ad999});
+app = new PIXI.Application(window.innerWidth, window.innerHeight, {backgroundColor : 0x2e3131});
 document.body.appendChild(app.view);
-app.renderer.backgroundColor = 0x061639;
+
 let background = new PIXI.Sprite.fromImage("https://i.ibb.co/mywwWzP/background.png");
-background.height = window.innerHeight;
+background.width = window.innerWidth;
 app.stage.addChild(background);
 
 var stage = new PIXI.Container();
 document.body.appendChild(app.view);
 
-const colors = [0x3CA55C, 0xDA22FF]
+const colors = [0x2ed573, 0xff6b81]
 let currentColor = 0;
 
 let style = new PIXI.TextStyle({
-  fontFamily: "Arial",
+  fontFamily: "Orbitron",
   fontSize: 36,
   fill: "white",
-  stroke: '#ff3300',
-  strokeThickness: 4,
   dropShadow: true,
-  dropShadowColor: "#000000",
-  dropShadowBlur: 4,
-  dropShadowAngle: Math.PI / 6,
-  dropShadowDistance: 6,
+  dropShadowColor: "#1e90ff",
+  dropShadowBlur: 10
 });
 
-
-let message = new PIXI.Text("SCORE: ", style);
+let message = new PIXI.Text("SCORE: 0", style);
 let cats = [];
 let score = 0;
 let colorSwitcher;
@@ -36,7 +31,7 @@ PIXI.loader
 
 function setup() {
   //Position it and add it to the stage
-  message.position.set(1200, 70);
+  message.position.set(window.innerWidth - 400, 75);
   app.stage.addChild(message);
   createCat();
   app.ticker.add(delta => gameLoop(delta));
@@ -78,7 +73,7 @@ function setupColorSwitcher() {
   const colorSwitcherWidth = 300;
   const colorSwitcherHeight = 120;
   
-  colorSwitcher.beginFill(colors[0], 1);
+  colorSwitcher.beginFill(0xffffff, 1);
   colorSwitcher.drawRect(
     window.innerWidth/2 - colorSwitcherWidth/2,
     window.innerHeight - colorSwitcherHeight/2,
@@ -92,18 +87,15 @@ function setupColorSwitcher() {
 }
 
 function toggleColor() {
+  let color;
   if(currentColor === 0) {
-    const color = createTintFilter(colors[1]);
+    color = createTintFilter(colors[1]);
     currentColor = 1;
-    colorSwitcher.filters = [color];
   } else {
-    const color = createTintFilter(colors[0]);
+    color = createTintFilter(colors[0]);
     currentColor = 0;
-    colorSwitcher.filters = [color];
   };
-}
-
-function handleRightClick() {
+  colorSwitcher.filters = [color];
 }
 
 function createTintFilter(tint) {
