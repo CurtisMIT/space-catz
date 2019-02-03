@@ -1,28 +1,14 @@
-let app = new PIXI.Application(window.innerWidth, window.innerHeight, {backgroundColor : 0x2ad999});
+app = new PIXI.Application(window.innerWidth, window.innerHeight, {backgroundColor : 0x2ad999});
 document.body.appendChild(app.view);
 app.renderer.backgroundColor = 0x061639;
-
-let Application = PIXI.Application,
-    Container = PIXI.Container,
-    loader = PIXI.loader,
-    resources = PIXI.loader.resources,
-    TextureCache = PIXI.utils.TextureCache,
-    Sprite = PIXI.Sprite;
-    Text = PIXI.Text;
-    TextStyle = PIXI.TextStyle;
 
 var stage = new PIXI.Container();
 document.body.appendChild(app.view);
 
+const colors = [0x3CA55C, 0xDA22FF]
+let currentColor = 0;
 
-loader
-  .add("images/cat.png")
-  .load(setup);
-
-let cat;
-let score = 0;
-
-let style = new TextStyle({
+let style = new PIXI.TextStyle({
   fontFamily: "Arial",
   fontSize: 36,
   fill: "white",
@@ -35,86 +21,87 @@ let style = new TextStyle({
   dropShadowDistance: 6,
 });
 
-let message = new Text("SCORE: ", style);
 
-//Position it and add it to the stage
-message.position.set(1200, 70);
-app.stage.addChild(message);
+let message = new PIXI.Text("SCORE: ", style);
+let cats = [];
+let score = 0;
+let colorSwitcher;
 
-
+PIXI.loader
+  .load(setup)
+  .load(setupColorSwitcher);
 
 function setup() {
-
-  //Create the `cat` sprite 
-  cat = new PIXI.Sprite.fromImage('https://i.gifer.com/4dI1.gif');
-  cat.y = 96; 
-  cat.vx = 0;
-  cat.vy = 0;
-  app.stage.addChild(cat);
-  
- 
-  //Start the game loop
+  //Position it and add it to the stage
+  message.position.set(1200, 70);
+  app.stage.addChild(message);
+  createCat();
   app.ticker.add(delta => gameLoop(delta));
-  cat.interactive = true;
-  cat.on('click', function(e){
-    console.log("touched");
-    score = score + 1;
-    message.text = "SCORE: " + score;
-    app.stage.removeChild(cat);
-  })
 }
 
 function gameLoop(delta){
-
-  //Update the cat's velocity
-  cat.vx = 1;
-  cat.vy = 1;
-
-  //Apply the velocity values to the cat's 
-  //position to make it move
-  cat.x += cat.vx;
-  cat.y += cat.vy;
-  creation(cat);
+  for (let i = 0; i < cats.length; i++) {
+    cats[i].x += cats[i].vx;
+    cats[i].y += cats[i].vy;
+  }
 }
 
-function creation(cat){
-  cat = new Sprite(resources["images/cat.png"].texture);
-  cat.y = 96; 
-  cat.vx = 0;
-  cat.vy = 0;
-  app.stage.addChild(cat);
+function createCat(){
+  let newCat = new PIXI.Sprite.fromImage('https://i.gifer.com/4dI1.gif');
+  newCat.y = 96; 
+  newCat.vx = 1;
+  newCat.vy = 1;  
+  newCat.interactive = true;
+  newCat.on('click', function(e){
+    score = score + 1;
+    message.text = "SCORE: " + score;
+    app.stage.removeChild(this);
+  });
+  cats.push(newCat);
+  app.stage.addChild(newCat);
 }
 
+function setupColorSwitcher() {
+  colorSwitcher = new PIXI.Graphics();
+  const colorSwitcherWidth = 300;
+  const colorSwitcherHeight = 120;
+  
+  colorSwitcher.beginFill(colors[0], 1);
+  colorSwitcher.drawRect(
+    window.innerWidth/2 - colorSwitcherWidth/2,
+    window.innerHeight - colorSwitcherHeight/2,
+    colorSwitcherWidth,
+    colorSwitcherHeight
+  );
+  colorSwitcher.interactive = true;
+  const color = createTintFilter(colors[currentColor]);
+  colorSwitcher.filters = [color];
+  app.stage.addChild(colorSwitcher);
+}
 
-
-const colors = [0x3CA55C, 0xDA22FF]
-let currentColor = 0;
-
-let colorSwitcher = new PIXI.Graphics();
-const colorSwitcherWidth = 300;
-const colorSwitcherHeight = 120;
-
-colorSwitcher.beginFill(colors[0], 1);
-colorSwitcher.drawRect(
-  window.innerWidth/2 - colorSwitcherWidth/2,
-  window.innerHeight - colorSwitcherHeight/2,
-  colorSwitcherWidth,
-  colorSwitcherHeight
-);
-colorSwitcher.interactive = true;
-colorSwitcher.on("click", handleColorSwitch);
-
-function handleColorSwitch() {
-  if(currentColor === 0) {
-    console.log(currentColor);
-    console.log(colors[currentColor]);
-    colorSwitcher.filters[createTintFilter(colors[currentColor])];
-    currentColor = 1;
-  } else {
-    console.log(currentColor);
-    colorSwitcher.filters[createTintFilter(colors[currentColor])];
+function handleLeftClick() {
+  if(currentColor === 1) {
+    const color = createTintFilter(colors[0]);
     currentColor = 0;
+    colorSwitcher.filters = [color];
   };
-  colorSwitcher.filters[createTintFilter(colors[currentColor])];
 }
 
+function handleRightClick() {
+  if(currentColor === 0) {
+    const color = createTintFilter(colors[1]);
+    currentColor = 1;
+    colorSwitcher.filters = [color];
+  };
+}
+
+function createTintFilter(tint) {
+  const color = new PIXI.filters.ColorMatrixFilter();
+  const r = tint >> 16 & 0xFF;
+  const g = tint >> 8 & 0xFF;
+  const b = tint & 0xFF;
+  color.matrix[0] = r / 255;
+  color.matrix[6] = g / 255;
+  color.matrix[12] = b / 255;
+  return color;
+}
