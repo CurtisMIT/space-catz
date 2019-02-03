@@ -136,20 +136,24 @@ function setupColorSwitcher() {
   );
   colorSwitcher.interactive = true;
   const color = createTintFilter(colors[currentColor]);
-  colorSwitcher.filters = [color];
+  glowFilter = new filters.GlowFilter(30, 5, 1, colors[currentColor]);
+  colorSwitcher.filters = [color, glowFilter];
   app.stage.addChild(colorSwitcher);
 }
 
 function toggleColor() {
+  let glowFilter;
   let color;
   if(currentColor === 0) {
+    glowFilter = new filters.GlowFilter(30, 5, 1, colors[1]);
     color = createTintFilter(colors[1]);
     currentColor = 1;
   } else {
+    glowFilter = new filters.GlowFilter(30, 5, 1, colors[0]);
     color = createTintFilter(colors[0]);
     currentColor = 0;
   };
-  colorSwitcher.filters = [color];
+  colorSwitcher.filters = [color, glowFilter];
 }
 
 function createTintFilter(tint) {
