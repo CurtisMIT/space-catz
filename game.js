@@ -48,14 +48,20 @@ function gameLoop(delta){
 
 function createCat(){
   let newCat = new PIXI.Sprite.fromImage('https://i.gifer.com/4dI1.gif');
-  newCat.y = 96; 
-  newCat.vx = 1;
-  newCat.vy = 1;  
+  newCat.y = 0;
+  newCat.x = Math.random() * window.innerWidth; 
+  newCat.vx = Math.random() * 5 + 3;
+  newCat.vy = Math.random() * 5 + 3;  
+  if (newCat.x > window.innerWidth/2){
+    newCat.vx = -newCat.vx;
+  }  
   newCat.interactive = true;
   newCat.on('click', function(e){
     score = score + 1;
     message.text = "SCORE: " + score;
     app.stage.removeChild(this);
+    createCat();
+    
   });
   cats.push(newCat);
   app.stage.addChild(newCat);
