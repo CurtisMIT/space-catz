@@ -5,9 +5,6 @@ let background = new PIXI.Sprite.fromImage("https://i.ibb.co/mywwWzP/background.
 background.width = window.innerWidth;
 app.stage.addChild(background);
 
-var stage = new PIXI.Container();
-document.body.appendChild(app.view);
-
 const colors = [0x2ed573, 0xff6b81]
 let currentColor = 0;
 
@@ -31,17 +28,22 @@ PIXI.loader
   .load(setupColorSwitcher);
 
 function setup() {
-  //Position it and add it to the stage
   message.position.set(window.innerWidth - 400, 75);
   app.stage.addChild(message);
   createHearts();
-  createCat();
-  
-  
   app.ticker.add(delta => gameLoop(delta));
   app.stage.interactive = true;
   app.stage.on('rightclick', toggleColor);
   app.stage.on('keydown', toggleColor);
+  catLoop();
+}
+
+function catLoop() {
+  let rand = Math.round(Math.random() * (1200 - 500)) + 200;
+  setTimeout(function() {
+    createCat();
+    catLoop();
+  }, rand);
 }
 
 function gameLoop(delta){
@@ -99,8 +101,8 @@ function createCat(){
   newCat.height = 150;
   newCat.y = 0;
   newCat.x = Math.random() * (window.innerWidth - newCat.width); 
-  newCat.vx = Math.random() * 5 + 3;
-  newCat.vy = Math.random() * 5 + 3;  
+  newCat.vx = Math.random() * 4 + 3;
+  newCat.vy = Math.random() * 4 + 3;  
   if (newCat.x > window.innerWidth/2){
     newCat.vx = -newCat.vx;
   }  
@@ -113,7 +115,6 @@ function createCat(){
     cats = cats.filter((value, index) => {
       return index != cats.indexOf(newCat);
     });
-    createCat();
   });
   cats.push(newCat);
   app.stage.addChild(newCat);
