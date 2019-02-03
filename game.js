@@ -1,6 +1,9 @@
 app = new PIXI.Application(window.innerWidth, window.innerHeight, {backgroundColor : 0x2ad999});
 document.body.appendChild(app.view);
 app.renderer.backgroundColor = 0x061639;
+let background = new PIXI.Sprite.fromImage("https://i.ibb.co/mywwWzP/background.png");
+background.height = window.innerHeight;
+app.stage.addChild(background);
 
 var stage = new PIXI.Container();
 document.body.appendChild(app.view);
@@ -37,6 +40,9 @@ function setup() {
   app.stage.addChild(message);
   createCat();
   app.ticker.add(delta => gameLoop(delta));
+  app.stage.interactive = true;
+  app.stage.on('rightclick', toggleColor);
+  app.stage.on('keydown', toggleColor);
 }
 
 function gameLoop(delta){
@@ -79,8 +85,12 @@ function setupColorSwitcher() {
   app.stage.addChild(colorSwitcher);
 }
 
-function handleLeftClick() {
-  if(currentColor === 1) {
+function toggleColor() {
+  if(currentColor === 0) {
+    const color = createTintFilter(colors[1]);
+    currentColor = 1;
+    colorSwitcher.filters = [color];
+  } else {
     const color = createTintFilter(colors[0]);
     currentColor = 0;
     colorSwitcher.filters = [color];
@@ -88,11 +98,6 @@ function handleLeftClick() {
 }
 
 function handleRightClick() {
-  if(currentColor === 0) {
-    const color = createTintFilter(colors[1]);
-    currentColor = 1;
-    colorSwitcher.filters = [color];
-  };
 }
 
 function createTintFilter(tint) {
