@@ -9,7 +9,7 @@ let background = new PIXI.Sprite.fromImage("https://i.ibb.co/mywwWzP/background.
 background.width = window.innerWidth;
 app.stage.addChild(background);
 
-const colors = [0x2ed573, 0xff6b81]
+const colors = [0x2ed573, 0xe056fd]
 let currentColor = 0;
 
 let style = new PIXI.TextStyle({
@@ -43,7 +43,7 @@ function setup() {
 }
 
 function catLoop() {
-  let rand = Math.round(Math.random() * (1200 - 500)) + 200;
+  let rand = Math.round(Math.random() * (1200 - 500)) + 300;
   setTimeout(function() {
     createCat();
     catLoop();
@@ -81,24 +81,29 @@ function createHearts(){
   hearts.push(heart2);
   hearts.push(heart3);
   
+  heart1.height = 100;
+  heart1.width = 100;
+  heart2.height = 100;
+  heart2.width = 100;
+  heart3.height = 100;
+  heart3.width = 100;
 
-  heart1.height = 142;
-  heart1.width = 150;
-  heart2.height = 142;
-  heart2.width = 150;
-  heart3.height = 142;
-  heart3.width = 150;
-
-  heart1.y = 0;
-  heart2.x = 130;
-  heart3.x = 260
+  heart1.y = 10;
+  heart1.x = 10;
+  heart2.y = 10;
+  heart2.x = 120;
+  heart3.y = 10;
+  heart3.x = 230
   app.stage.addChild(heart1);
   app.stage.addChild(heart2);
   app.stage.addChild(heart3);
 }
 
 function createCat(){
-  let newCat = new PIXI.Sprite.fromImage('https://i.gifer.com/4dI1.gif');
+  const randomChance = Math.random();
+  const catUrl = randomChance < 0.5 ? 'https://i.ibb.co/mRfG372/greencat.png' : 'https://i.ibb.co/vLwDfzv/purplecat.png';
+  let newCat = new PIXI.Sprite.fromImage(catUrl);
+  newCat.color = randomChance < 0.5 ? 0 : 1;
   newCat.width = 142;
   newCat.height = 150;
   newCat.y = 0;
@@ -107,16 +112,18 @@ function createCat(){
   newCat.vy = Math.random() * 4 + 3;  
   if (newCat.x > window.innerWidth/2){
     newCat.vx = -newCat.vx;
-  }  
+  }
   
   newCat.interactive = true;
   newCat.on('click', function(e){
-    score = score + 1;
-    message.text = "SCORE: " + score;
-    app.stage.removeChild(this);
-    cats = cats.filter((value, index) => {
-      return index != cats.indexOf(newCat);
-    });
+    if (newCat.color === currentColor) {
+      score = score + 1;
+      message.text = "SCORE: " + score;
+      app.stage.removeChild(this);
+      cats = cats.filter((value, index) => {
+        return index != cats.indexOf(newCat);
+      });
+    }
   });
   cats.push(newCat);
   app.stage.addChild(newCat);
@@ -136,7 +143,7 @@ function setupColorSwitcher() {
   );
   colorSwitcher.interactive = true;
   const color = createTintFilter(colors[currentColor]);
-  glowFilter = new filters.GlowFilter(30, 5, 1, colors[currentColor]);
+  glowFilter = new filters.GlowFilter(50, 1, 1, colors[currentColor]);
   colorSwitcher.filters = [color, glowFilter];
   app.stage.addChild(colorSwitcher);
 }
@@ -145,11 +152,11 @@ function toggleColor() {
   let glowFilter;
   let color;
   if(currentColor === 0) {
-    glowFilter = new filters.GlowFilter(30, 5, 1, colors[1]);
+    glowFilter = new filters.GlowFilter(50, 1, 1, colors[1]);
     color = createTintFilter(colors[1]);
     currentColor = 1;
   } else {
-    glowFilter = new filters.GlowFilter(30, 5, 1, colors[0]);
+    glowFilter = new filters.GlowFilter(50, 1, 1, colors[0]);
     color = createTintFilter(colors[0]);
     currentColor = 0;
   };
