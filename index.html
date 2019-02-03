@@ -2,16 +2,26 @@
 
 <html>
   <head>
+    <meta charset="utf-8">
     <title>game</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.1/pixi.min.js"></script>
+    <script src="pixi/pixi.min.js"></script>
     <link rel="stylesheet" href="styles.css">
   </head>
 
   <body>
+<<<<<<< HEAD
     <script src="game.js"></script>
     <script>
       
+=======
+    <script type="text/javascript">
+      let type = "WebGL"
+      if(!PIXI.utils.isWebGLSupported()){
+        type = "canvas"
+      }
+>>>>>>> 4acdf2902f2fe5f023b21951f1e27ed9c0808d93
     </script>
+    <script src="game.js"></script>
   </body>
 </html>
 

@@ -46,7 +46,7 @@ app.stage.addChild(message);
 function setup() {
 
   //Create the `cat` sprite 
-  cat = new PIXI.Sprite.FromImage('https://i.gifer.com/4dI1.gif');
+  cat = new PIXI.Sprite.fromImage('https://i.gifer.com/4dI1.gif');
   cat.y = 96; 
   cat.vx = 0;
   cat.vy = 0;
@@ -62,9 +62,6 @@ function setup() {
     message.text = "SCORE: " + score;
     app.stage.removeChild(cat);
   })
-  
-
-  
 }
 
 function gameLoop(delta){
@@ -90,7 +87,34 @@ function creation(cat){
 
 
 
+const colors = [0x3CA55C, 0xDA22FF]
+let currentColor = 0;
 
+let colorSwitcher = new PIXI.Graphics();
+const colorSwitcherWidth = 300;
+const colorSwitcherHeight = 120;
 
+colorSwitcher.beginFill(colors[0], 1);
+colorSwitcher.drawRect(
+  window.innerWidth/2 - colorSwitcherWidth/2,
+  window.innerHeight - colorSwitcherHeight/2,
+  colorSwitcherWidth,
+  colorSwitcherHeight
+);
+colorSwitcher.interactive = true;
+colorSwitcher.on("click", handleColorSwitch);
 
+function handleColorSwitch() {
+  if(currentColor === 0) {
+    console.log(currentColor);
+    console.log(colors[currentColor]);
+    colorSwitcher.filters[createTintFilter(colors[currentColor])];
+    currentColor = 1;
+  } else {
+    console.log(currentColor);
+    colorSwitcher.filters[createTintFilter(colors[currentColor])];
+    currentColor = 0;
+  };
+  colorSwitcher.filters[createTintFilter(colors[currentColor])];
+}
 
