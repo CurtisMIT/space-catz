@@ -25,10 +25,6 @@ let cats = [];
 let score = 0;
 let colorSwitcher;
 let hearts = [];
-// let heart1 = new PIXI.Sprite.fromImage('https://i.gifer.com/DDg.gif');
-// let heart2 = new PIXI.Sprite.fromImage('https://i.gifer.com/DDg.gif');
-// let heart3 = new PIXI.Sprite.fromImage('https://i.gifer.com/DDg.gif');
-
 
 PIXI.loader
   .load(setup)
@@ -49,6 +45,7 @@ function setup() {
 }
 
 function gameLoop(delta){
+  let deleteIndex = [];
   for (let i = 0; i < cats.length; i++) {
     cats[i].x += cats[i].vx;
     cats[i].y += cats[i].vy;
@@ -60,9 +57,12 @@ function gameLoop(delta){
       app.stage.removeChild(cats[i]);
       app.stage.removeChild(hearts[hearts.length - 1]);
       hearts.pop();
-
+      deleteIndex.push(i);
     }
   }
+  cats = cats.filter((value, index) => {
+    return !deleteIndex.includes(index); 
+  })
 }
 
 function createHearts(){
@@ -110,13 +110,11 @@ function createCat(){
     score = score + 1;
     message.text = "SCORE: " + score;
     app.stage.removeChild(this);
+    cats = cats.filter((value, index) => {
+      return index != cats.indexOf(newCat);
+    });
     createCat();
-    
   });
-  if (newCat.y == window.innerHeight){
-    app.stage.removeChild(heart3);
-    createCat();
-  }
   cats.push(newCat);
   app.stage.addChild(newCat);
   
