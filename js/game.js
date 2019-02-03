@@ -1,3 +1,6 @@
+const PIXI = require('pixi.js');
+const filters = require('pixi-filters');
+
 app = new PIXI.Application(window.innerWidth, window.innerHeight, {backgroundColor : 0x2e3131});
 document.body.appendChild(app.view);
 
@@ -93,8 +96,6 @@ function createHearts(){
   app.stage.addChild(heart3);
 }
 
-
-
 function createCat(){
   let newCat = new PIXI.Sprite.fromImage('https://i.gifer.com/4dI1.gif');
   newCat.width = 142;
@@ -118,7 +119,6 @@ function createCat(){
   });
   cats.push(newCat);
   app.stage.addChild(newCat);
-  
 }
 
 function setupColorSwitcher() {
