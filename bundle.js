@@ -12,6 +12,9 @@ app.stage.addChild(background);
 const colors = [0x2ed573, 0xff6b81]
 let currentColor = 0;
 
+
+
+
 let style = new PIXI.TextStyle({
   fontFamily: "Orbitron",
   fontSize: 36,
@@ -69,6 +72,13 @@ function gameLoop(delta){
   cats = cats.filter((value, index) => {
     return !deleteIndex.includes(index); 
   })
+
+  if (hearts.length == 0){
+    alert("GAME OVER\nREFRESH TO PLAY AGAIN");
+    //createHearts();
+  }
+ 
+
 }
 
 function createHearts(){
@@ -166,6 +176,7 @@ function createTintFilter(tint) {
   color.matrix[12] = b / 255;
   return color;
 }
+
 
 },{"pixi-filters":41,"pixi.js":174}],2:[function(require,module,exports){
 /*!
