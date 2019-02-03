@@ -26,6 +26,11 @@ let message = new PIXI.Text("SCORE: ", style);
 let cats = [];
 let score = 0;
 let colorSwitcher;
+let hearts = [];
+// let heart1 = new PIXI.Sprite.fromImage('https://i.gifer.com/DDg.gif');
+// let heart2 = new PIXI.Sprite.fromImage('https://i.gifer.com/DDg.gif');
+// let heart3 = new PIXI.Sprite.fromImage('https://i.gifer.com/DDg.gif');
+
 
 PIXI.loader
   .load(setup)
@@ -35,26 +40,71 @@ function setup() {
   //Position it and add it to the stage
   message.position.set(1200, 70);
   app.stage.addChild(message);
+  createHearts();
   createCat();
+  
+  
   app.ticker.add(delta => gameLoop(delta));
+  
 }
 
 function gameLoop(delta){
   for (let i = 0; i < cats.length; i++) {
     cats[i].x += cats[i].vx;
     cats[i].y += cats[i].vy;
+    
+    if (cats[i].x + cats[i].width > window.innerWidth || cats[i].x < 0){
+      cats[i].vx = -cats[i].vx;
+    }
+    if (cats[i].y + cats[i].height > window.innerHeight){
+      app.stage.removeChild(cats[i]);
+      app.stage.removeChild(hearts[hearts.length - 1]);
+      hearts.pop();
+
+    }
   }
 }
 
+function createHearts(){
+  
+  let heart1 = new PIXI.Sprite.fromImage('https://i.gifer.com/DDg.gif');
+  let heart2 = new PIXI.Sprite.fromImage('https://i.gifer.com/DDg.gif');
+  let heart3 = new PIXI.Sprite.fromImage('https://i.gifer.com/DDg.gif');
+
+  hearts.push(heart1);
+  hearts.push(heart2);
+  hearts.push(heart3);
+  
+
+  heart1.height = 142;
+  heart1.width = 150;
+  heart2.height = 142;
+  heart2.width = 150;
+  heart3.height = 142;
+  heart3.width = 150;
+
+  heart1.y = 0;
+  heart2.x = 130;
+  heart3.x = 260
+  app.stage.addChild(heart1);
+  app.stage.addChild(heart2);
+  app.stage.addChild(heart3);
+}
+
+
+
 function createCat(){
   let newCat = new PIXI.Sprite.fromImage('https://i.gifer.com/4dI1.gif');
+  newCat.width = 142;
+  newCat.height = 150;
   newCat.y = 0;
-  newCat.x = Math.random() * window.innerWidth; 
+  newCat.x = Math.random() * (window.innerWidth - newCat.width); 
   newCat.vx = Math.random() * 5 + 3;
   newCat.vy = Math.random() * 5 + 3;  
   if (newCat.x > window.innerWidth/2){
     newCat.vx = -newCat.vx;
   }  
+  
   newCat.interactive = true;
   newCat.on('click', function(e){
     score = score + 1;
@@ -63,8 +113,13 @@ function createCat(){
     createCat();
     
   });
+  if (newCat.y == window.innerHeight){
+    app.stage.removeChild(heart3);
+    createCat();
+  }
   cats.push(newCat);
   app.stage.addChild(newCat);
+  
 }
 
 function setupColorSwitcher() {
